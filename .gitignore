@@ -34,3 +34,4 @@ Debug/
 Release/
 *.db
 *.ipch
+*.sdf

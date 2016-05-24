@@ -20,7 +20,7 @@ bool ShadowMapTechnique::init()
 		return false;
 	}
 
-	if (!addShader(GL_VERTEX_SHADER, "shadow_map.vs"))
+	if (!addShader(GL_VERTEX_SHADER, "shadow_map.vert"))
 	{
 		return false;
 	}

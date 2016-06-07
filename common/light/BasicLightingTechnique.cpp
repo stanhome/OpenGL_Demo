@@ -1,6 +1,6 @@
 ﻿#include <assert.h>
 
-#include "ogl/light/LightingTechnique.h"
+#include "ogl/light/BasicLightingTechnique.h"
 
 const char *FILE_VERTEX_SHADER = "shader.vert";
 const char *FILE_FRAGMENT_SHADER = "shader.frag";
@@ -12,7 +12,7 @@ const char *FILE_FRAGMENT_SHADER = "shader.frag";
 GLuint m_WVPLocation;
 GLuint m_samplerLocation;
 
-LightingTechnique::LightingTechnique()
+BasicLightingTechnique::BasicLightingTechnique()
 	: m_WVPLocation(0)
 	, m_worldMatrixLocation(0)
 	, m_samplerLocation(0)
@@ -27,7 +27,7 @@ LightingTechnique::LightingTechnique()
 	memset(&m_spotLightsLocation, 0, sizeof(SpotLightsLocation));
 }
 
-bool LightingTechnique::init()
+bool BasicLightingTechnique::init()
 {
 	if (!Technique::init())
 	{
@@ -172,23 +172,23 @@ bool LightingTechnique::init()
 	return true;
 }
 
-void LightingTechnique::setWVP(const Matrix4f &wvp)
+void BasicLightingTechnique::setWVP(const Matrix4f &wvp)
 {
 	//加载数据到着色器的一致变量中
 	glUniformMatrix4fv(m_WVPLocation, 1, GL_TRUE, (const GLfloat *)wvp.m);
 }
 
-void LightingTechnique::SetWorldMatrix(const Matrix4f &worldInverse)
+void BasicLightingTechnique::SetWorldMatrix(const Matrix4f &worldInverse)
 {
 	glUniformMatrix4fv(m_worldMatrixLocation, 1, GL_TRUE, (const GLfloat *)worldInverse.m);
 }
 
-void LightingTechnique::setTextureUnit(unsigned int textureUnit)
+void BasicLightingTechnique::setTextureUnit(unsigned int textureUnit)
 {
 	glUniform1i(m_samplerLocation, textureUnit);
 }
 
-void LightingTechnique::setDirectionalLight(const DirectionalLight &light)
+void BasicLightingTechnique::setDirectionalLight(const DirectionalLight &light)
 {
 	glUniform3f(m_dirLightLocation.Color, light.color.x, light.color.y, light.color.z);
 	glUniform1f(m_dirLightLocation.AmbientIntensity, light.ambientIntensity);
@@ -198,7 +198,7 @@ void LightingTechnique::setDirectionalLight(const DirectionalLight &light)
 	glUniform1f(m_dirLightLocation.DiffuseIntensity, light.diffuseIntensity);
 }
 
-void LightingTechnique::setPointLights(unsigned int numLights, const PointLight *pLights)
+void BasicLightingTechnique::setPointLights(unsigned int numLights, const PointLight *pLights)
 {
 	glUniform1i(m_numPointLightsLocation, numLights);
 	for (unsigned int i = 0; i < numLights; ++i)
@@ -215,7 +215,7 @@ void LightingTechnique::setPointLights(unsigned int numLights, const PointLight 
 	}
 }
 
-void LightingTechnique::setSpotLights(unsigned int numLights, const SpotLight *pLights)
+void BasicLightingTechnique::setSpotLights(unsigned int numLights, const SpotLight *pLights)
 {
 	glUniform1i(m_numSpotLightsLocation, numLights);
 
@@ -237,17 +237,17 @@ void LightingTechnique::setSpotLights(unsigned int numLights, const SpotLight *p
 	}
 }
 
-void LightingTechnique::setEyeWorldPos(const Vector3f &eyeWorldPos)
+void BasicLightingTechnique::setEyeWorldPos(const Vector3f &eyeWorldPos)
 {
 	glUniformMatrix3fv(m_eyeWorldPosLocation, 1, GL_TRUE, (const GLfloat *)eyeWorldPos);
 }
 
-void LightingTechnique::setMatSpecularIntensity(float intensity)
+void BasicLightingTechnique::setMatSpecularIntensity(float intensity)
 {
 	glUniform1f(m_matSpecularIntensityLocation, intensity);
 }
 
-void LightingTechnique::setMatSpecularPower(float power)
+void BasicLightingTechnique::setMatSpecularPower(float power)
 {
 	glUniform1f(m_matSpecularPowerLocation, power);
 }

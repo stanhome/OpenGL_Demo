@@ -38,6 +38,9 @@
     <ClInclude Include="ShadowMapTechnique.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="LightingTechnique.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -55,9 +58,14 @@
     <ClCompile Include="ShadowMapTechnique.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="LightingTechnique.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shadow_map.frag" />
     <None Include="shadow_map.vert" />
+    <None Include="shader.frag" />
+    <None Include="shader.vert" />
   </ItemGroup>
 </Project>

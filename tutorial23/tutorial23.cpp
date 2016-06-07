@@ -21,7 +21,8 @@
 #include "mesh.h"
 #include "shadow_map_fbo.h"
 #include "ShadowMapTechnique.h"
-#include "ogl/light/LightingTechnique.h"
+#include "ogl/light/BasicLightingTechnique.h"
+#include "LightingTechnique.h"
 
 #define WINDOW_WIDTH 1280
 #define WINDOW_HEIGHT 1024
@@ -32,12 +33,14 @@ class Tutorial23 : public ICallbacks
 {
 public:
 	Tutorial23()
-		: m_pEffect(NULL)
+		: m_pLightingEffect(NULL)
+		, m_pShadowMapEffect(NULL)
 		, m_pGameCamera(NULL)
 		, m_scale(0.0f)
 		, m_spotLight()
 		, m_pMesh(NULL)
 		, m_pQuad(NULL)
+		, m_pGroundTex(NULL)
 		, m_shadowMapFBO()
 		, m_persProj()
 	{
@@ -59,10 +62,12 @@ public:
 
 	~Tutorial23()
 	{
-		SAFE_DELETE(m_pEffect);
+		SAFE_DELETE(m_pLightingEffect)
+		SAFE_DELETE(m_pShadowMapEffect);
 		SAFE_DELETE(m_pGameCamera);
 		SAFE_DELETE(m_pMesh);
 		SAFE_DELETE(m_pQuad);
+		SAFE_DELETE(m_pGroundTex);
 	}
 
 	bool init()
@@ -75,19 +80,39 @@ public:
 			}
 
 			//camera
-			m_pGameCamera = new Camera(WINDOW_WIDTH, WINDOW_HEIGHT);
+			Vector3f pos(3.0f, 8.0f, -10.0f);
+			Vector3f target(0.0f, -0.2f, 1.0f);
+			Vector3f up(0.0, 1.0f, 0.0f);
+			m_pGameCamera = new Camera(WINDOW_WIDTH, WINDOW_HEIGHT, pos, target, up);
 
 			//shader effect
-			m_pEffect = new ShadowMapTechnique();
-			if (!m_pEffect->init())
+			m_pLightingEffect = new LightingTechnique();
+			if (!m_pLightingEffect->init())
 			{
-				printf("Error initializing the light technique\n");
+				printf("Error initializing the light technique.\n");
 				break;
 			}
-			m_pEffect->enable();
+			m_pLightingEffect->enable();
+			m_pLightingEffect->setSpotLights(1, &m_spotLight);
+			m_pLightingEffect->setTextureUnit(0);
+			m_pLightingEffect->setShadowMapTextureUnit(1);
+
+			m_pShadowMapEffect = new ShadowMapTechnique();
+			if (!m_pShadowMapEffect->init())
+			{
+				printf("Error initializing the shdow map technique\n");
+				break;
+			}
+			//m_pShadowMapEffect->enable();
 
 			m_pQuad = new Mesh();
 			if (!m_pQuad->loadMesh("../content/quad.obj"))
+			{
+				break;
+			}
+
+			m_pGroundTex = new Texture(GL_TEXTURE_2D, "../content/test.png");
+			if (!m_pGroundTex->load())
 			{
 				break;
 			}
@@ -131,6 +156,7 @@ public:
 		m_shadowMapFBO.bindForWriting();
 
 		glClear(GL_DEPTH_BUFFER_BIT);
+		m_pShadowMapEffect->enable();
 
 		Pipeline p;
 		p.scale(0.1f, 0.1f, 0.1f);
@@ -138,7 +164,7 @@ public:
 		p.worldPos(0.0f, 0.0f, 5.0f);
 		p.setCamera(m_spotLight.position, m_spotLight.direction, Vector3f(0.0f, 1.0f, 0.0f));
 		p.setPerspectiveProj(m_persProj);
-		m_pEffect->setWVP(p.getWVPTrans());
+		m_pShadowMapEffect->setWVP(p.getWVPTrans());
 		m_pMesh->render();
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -148,16 +174,33 @@ public:
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		m_pEffect->setTextureUnit(0);
-		m_shadowMapFBO.bindForReading(GL_TEXTURE0);
+		m_pLightingEffect->enable();
+		m_pLightingEffect->setEyeWorldPos(m_pGameCamera->getPos());
+
+		m_shadowMapFBO.bindForReading(GL_TEXTURE1);
 
 		Pipeline p;
-		p.scale(5.0f, 5.0f, 5.0f);
-		p.worldPos(0.0f, 0.0f, 10.0f);
-		p.setCamera(m_pGameCamera->getPos(), m_pGameCamera->getTarget(), m_pGameCamera->getUp());
 		p.setPerspectiveProj(m_persProj);
-		m_pEffect->setWVP(p.getWVPTrans());
+		p.scale(10.0f, 10.0f, 10.0f);
+		p.worldPos(0.0f, 0.0f, 1.0f);
+		p.rotate(90.0f, 0.0f, 0.0f);
+		p.setCamera(m_pGameCamera->getPos(), m_pGameCamera->getTarget(), m_pGameCamera->getUp());
+		m_pLightingEffect->setWVP(p.getWVPTrans());
+		m_pLightingEffect->SetWorldMatrix(p.getWorldTrans());
+		p.setCamera(m_spotLight.position, m_spotLight.direction, Vector3f(0.0f, 1.0f, 0.0f));
+		m_pLightingEffect->setLightWVP(p.getWVPTrans());
+		m_pGroundTex->bind(GL_TEXTURE1);
 		m_pQuad->render();
+
+		p.scale(0.1f, 0.1f, 0.1f);
+		p.rotate(0.0f, m_scale, 0.0f);
+		p.worldPos(0.0f, 0.0f, 3.0f);
+		p.setCamera(*m_pGameCamera);
+		m_pLightingEffect->setWVP(p.getWVPTrans());
+		m_pLightingEffect->SetWorldMatrix(p.getWorldTrans());
+		p.setCamera(m_spotLight.position, m_spotLight.direction, Vector3f(0.0f, 1.0f, 0.0f));
+		m_pLightingEffect->setLightWVP(p.getWVPTrans());
+		m_pMesh->render();
 	}
 
 	virtual void keyboardCB(OGLDEV_KEY ogldevKey, OGLDEV_KEY_STATE ogldevKeyState = OGLDEV_KEY_STATE_PRESS) override
@@ -201,12 +244,14 @@ public:
 	}
 
 private:
-	ShadowMapTechnique *m_pEffect = NULL;
+	LightingTechnique *m_pLightingEffect;
+	ShadowMapTechnique *m_pShadowMapEffect = NULL;
 	Camera *m_pGameCamera = NULL;
 	float m_scale;
 	SpotLight m_spotLight;
 	Mesh *m_pMesh;
 	Mesh *m_pQuad;
+	Texture *m_pGroundTex;
 	ShadowMapFBO m_shadowMapFBO;
 	PersProjInfo m_persProj;
 };
@@ -214,7 +259,7 @@ private:
 int main(int argc, char * argv[])
 {
 	GLUTBackendInit(argc, argv, true, false);
-	if (!GLUTBackendCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, false, "Tutorial 23"))
+	if (!GLUTBackendCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, false, "Tutorial 24"))
 	{
 		assert(0);
 		//return 1;

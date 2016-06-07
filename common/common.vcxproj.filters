@@ -39,7 +39,7 @@
     <ClCompile Include="light\lights_common.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="light\LightingTechnique.cpp">
+    <ClCompile Include="light\BasicLightingTechnique.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -74,10 +74,10 @@
     <ClInclude Include="..\include\ogl\technique.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\ogl\light\LightingTechnique.h">
+    <ClInclude Include="..\include\ogl\light\lights_common.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\ogl\light\lights_common.h">
+    <ClInclude Include="..\include\ogl\light\BasicLightingTechnique.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

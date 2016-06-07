@@ -19,7 +19,7 @@
 #include "ogl/technique.h"
 
 #include "mesh.h"
-#include "ogl/light/LightingTechnique.h"
+#include "ogl/light/BasicLightingTechnique.h"
 
 #define WINDOW_WIDTH 1280
 #define WINDOW_HEIGHT 1024
@@ -68,7 +68,7 @@ public:
 			m_pGameCamera = new Camera(WINDOW_WIDTH, WINDOW_HEIGHT, pos, target, up);
 
 			//shader effect
-			m_pEffect = new LightingTechnique();
+			m_pEffect = new BasicLightingTechnique();
 			if (!m_pEffect->init())
 			{
 				printf("Error initializing the light technique\n");
@@ -199,7 +199,7 @@ public:
 	}
 
 private:
-	LightingTechnique *m_pEffect = NULL;
+	BasicLightingTechnique *m_pEffect = NULL;
 	Camera *m_pGameCamera = NULL;
 	float m_scale;
 	DirectionalLight m_directionalLight;

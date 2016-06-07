@@ -12,7 +12,7 @@
 #include "ogl/light/lights_common.h"
 #include "ogl/util.h"
 
-class LightingTechnique : public Technique
+class BasicLightingTechnique : public Technique
 {
 private:
 	struct BaseLightLocation
@@ -50,7 +50,7 @@ public:
 	static const unsigned int MAX_POINT_LIGHTS = 2;
 	static const unsigned int MAX_SPOT_LIGHTS = 2;
 
-	LightingTechnique();
+	BasicLightingTechnique();
 
 	virtual bool init();
 

@@ -146,7 +146,7 @@
   <ItemGroup>
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="glut_backend.cpp" />
-    <ClCompile Include="light\LightingTechnique.cpp" />
+    <ClCompile Include="light\BasicLightingTechnique.cpp" />
     <ClCompile Include="light\lights_common.cpp" />
     <ClCompile Include="math_3d.cpp" />
     <ClCompile Include="pipeline.cpp" />
@@ -159,7 +159,7 @@
     <ClInclude Include="..\include\ogl\camera.h" />
     <ClInclude Include="..\include\ogl\glut_backend.h" />
     <ClInclude Include="..\include\ogl\keys.h" />
-    <ClInclude Include="..\include\ogl\light\LightingTechnique.h" />
+    <ClInclude Include="..\include\ogl\light\BasicLightingTechnique.h" />
     <ClInclude Include="..\include\ogl\light\lights_common.h" />
     <ClInclude Include="..\include\ogl\math_3d.h" />
     <ClInclude Include="..\include\ogl\pipeline.h" />

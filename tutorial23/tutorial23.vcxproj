@@ -162,6 +162,7 @@ xcopy /Y /Q /S "$(SolutionDir)..\dll\*.*" "$(OutDir)"</Command>
   <ItemGroup>
     <ClInclude Include="..\include\GL\freeglut.h" />
     <ClInclude Include="..\include\GL\glew.h" />
+    <ClInclude Include="LightingTechnique.h" />
     <ClInclude Include="mesh.h" />
     <ClInclude Include="ShadowMapTechnique.h" />
     <ClInclude Include="shadow_map_fbo.h" />
@@ -169,6 +170,7 @@ xcopy /Y /Q /S "$(SolutionDir)..\dll\*.*" "$(OutDir)"</Command>
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="LightingTechnique.cpp" />
     <ClCompile Include="mesh.cpp" />
     <ClCompile Include="ShadowMapTechnique.cpp" />
     <ClCompile Include="shadow_map_fbo.cpp" />
@@ -186,6 +188,8 @@ xcopy /Y /Q /S "$(SolutionDir)..\dll\*.*" "$(OutDir)"</Command>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="shader.frag" />
+    <None Include="shader.vert" />
     <None Include="shadow_map.frag" />
     <None Include="shadow_map.vert" />
   </ItemGroup>

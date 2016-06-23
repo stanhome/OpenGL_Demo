@@ -8,10 +8,6 @@ const char *FILE_FRAGMENT_SHADER = "shader.frag";
 //const char *FILE_FRAGMENT_SHADER = "lighting.fs";
 
 
-
-GLuint m_WVPLocation;
-GLuint m_samplerLocation;
-
 BasicLightingTechnique::BasicLightingTechnique()
 	: m_WVPLocation(0)
 	, m_worldMatrixLocation(0)
@@ -92,16 +88,6 @@ bool BasicLightingTechnique::init()
 
 		SNPRINTF(name, sizeof(name), "gPointLights[%d].Atten.Exp", i);
 		rpll.Atten.Exp = getUniformLocation(name);
-
-		if (rpll.Color == INVALID_UNIFORM_LOCATION ||
-			rpll.AmbientIntensity == INVALID_UNIFORM_LOCATION ||
-			rpll.Position == INVALID_UNIFORM_LOCATION ||
-			rpll.DiffuseIntensity == INVALID_UNIFORM_LOCATION ||
-			rpll.Atten.Constant == INVALID_UNIFORM_LOCATION ||
-			rpll.Atten.Linear == INVALID_UNIFORM_LOCATION ||
-			rpll.Atten.Exp == INVALID_UNIFORM_LOCATION) {
-			return false;
-		}
 	}
 
 	//spot lights location
@@ -136,37 +122,6 @@ bool BasicLightingTechnique::init()
 
 		SNPRINTF(name, sizeof(name), "gSpotLights[%d].Cutoff", i);
 		rsll.Cutoff = getUniformLocation(name);
-
-		if (rsll.Color == INVALID_UNIFORM_LOCATION ||
-			rsll.AmbientIntensity == INVALID_UNIFORM_LOCATION ||
-			rsll.DiffuseIntensity == INVALID_UNIFORM_LOCATION ||
-			rsll.Position == INVALID_UNIFORM_LOCATION ||
-			rsll.Atten.Constant == INVALID_UNIFORM_LOCATION ||
-			rsll.Atten.Linear == INVALID_UNIFORM_LOCATION ||
-			rsll.Atten.Exp == INVALID_UNIFORM_LOCATION ||
-			rsll.Direction == INVALID_UNIFORM_LOCATION ||
-			rsll.Cutoff == INVALID_UNIFORM_LOCATION
-			)
-		{
-			return false;
-		}
-	}
-
-	if (m_WVPLocation == 0xFFFFFFFF ||
-		m_samplerLocation == 0xFFFFFFFF ||
-		m_worldMatrixLocation == 0xFFFFFFFF ||
-		m_eyeWorldPosLocation == 0xFFFFFFFF ||
-		m_dirLightLocation.Color == 0xFFFFFFFF ||
-		m_dirLightLocation.AmbientIntensity == 0xFFFFFFFF ||
-		m_dirLightLocation.Direction == 0xFFFFFFFF ||
-		m_dirLightLocation.DiffuseIntensity == 0xFFFFFFFF ||
-		m_matSpecularIntensityLocation == 0xFFFFFFFF ||
-		m_matSpecularPowerLocation == 0xFFFFFFFF ||
-		m_numPointLightsLocation == 0xFFFFFFFF ||
-		m_numSpotLightsLocation == 0xFFFFFFFF 
-		)
-	{
-		return false;
 	}
 
 	return true;

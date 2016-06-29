@@ -74,8 +74,11 @@ public:
 		setCamera(camera.getPos(), camera.getTarget(), camera.getUp());
 	}
 
+	// world projections.
 	const Matrix4f &getWPTrans();
+	// view projections
 	const Matrix4f &getVPTrans();
+	// world - view - projections
 	const Matrix4f &getWVPTrans();
 	const Matrix4f &getWorldTrans();
 	const Matrix4f &getViewTrans();

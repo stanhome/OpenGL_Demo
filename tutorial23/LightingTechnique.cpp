@@ -21,11 +21,6 @@ bool LightingTechnique::init()
 	m_lightWVPLocation = getUniformLocation("gLightWVP");
 	m_shadowMapLocation = getUniformLocation("gShadowMap");
 
-	if (m_lightWVPLocation == INVALID_UNIFORM_LOCATION || m_shadowMapLocation == INVALID_UNIFORM_LOCATION)
-	{
-		return false;
-	}
-
 	return true;
 }
 

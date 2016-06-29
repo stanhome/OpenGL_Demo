@@ -48,10 +48,21 @@ public:
 		m_spotLight.color = Vector3f(1.0f, 1.0f, 1.0f);
 		m_spotLight.ambientIntensity = 0.0f;
 		m_spotLight.diffuseIntensity = 0.9f;
-		m_spotLight.attenuation.linear = 0.01f;
+		m_spotLight.attenuation.linear = 0.001f;
 		m_spotLight.position = Vector3f(-20.0, 20.0, 5.0f);
 		m_spotLight.direction = Vector3f(1.0f, -1.0, 0.0);
-		m_spotLight.cutoff = 20.0f;
+		m_spotLight.cutoff = 40.0f;
+
+		m_pointLight.color = Vector3f(0.0f, 1.0f, 1.0f);
+		m_pointLight.ambientIntensity = 0.0f;
+		m_pointLight.diffuseIntensity = 0.9f;
+		m_pointLight.attenuation.linear = 0.01f;
+		m_pointLight.position = Vector3f(00.0, 20.0, 0.0f);
+
+		m_dirLight.color = Vector3f(1.0f, 1.0f, 1.0f);
+		m_dirLight.ambientIntensity = 0.01f;
+		m_dirLight.diffuseIntensity = 0.5f;
+		m_dirLight.direction = Vector3f(0.0f, -1.0f, 0.0f);
 
 		m_persProj.FOV = 60.0f;
 		m_persProj.height = WINDOW_HEIGHT;
@@ -81,7 +92,8 @@ public:
 
 			//camera
 			Vector3f pos(3.0f, 8.0f, -10.0f);
-			Vector3f target(0.0f, -0.2f, 1.0f);
+			//Vector3f pos(3.0f, 8.0f, 1.0f);
+			Vector3f target(0.0f, -1.0f, 1.0f);
 			Vector3f up(0.0, 1.0f, 0.0f);
 			m_pGameCamera = new Camera(WINDOW_WIDTH, WINDOW_HEIGHT, pos, target, up);
 
@@ -93,7 +105,8 @@ public:
 				break;
 			}
 			m_pLightingEffect->enable();
-			m_pLightingEffect->setSpotLights(1, &m_spotLight);
+			
+			m_pLightingEffect->setPointLights(1, &m_pointLight);
 			m_pLightingEffect->setTextureUnit(0);
 			m_pLightingEffect->setShadowMapTextureUnit(1);
 
@@ -138,7 +151,9 @@ public:
 	virtual void renderSceneCB() override
 	{
 		m_scale += 0.05f;
-
+		m_pLightingEffect->enable();
+		m_pLightingEffect->setDirectionalLight(m_dirLight);
+		m_pLightingEffect->setSpotLights(1, &m_spotLight);
 		m_pGameCamera->onRender();
 		
 		shadowMapPass();
@@ -154,14 +169,13 @@ public:
 	virtual void shadowMapPass()
 	{
 		m_shadowMapFBO.bindForWriting();
-
 		glClear(GL_DEPTH_BUFFER_BIT);
 		m_pShadowMapEffect->enable();
 
 		Pipeline p;
 		p.scale(0.1f, 0.1f, 0.1f);
 		p.rotate(0.0f, m_scale, 0.0f);
-		p.worldPos(0.0f, 0.0f, 5.0f);
+		p.worldPos(0.0f, 0.0f, 3.0f);
 		p.setCamera(m_spotLight.position, m_spotLight.direction, Vector3f(0.0f, 1.0f, 0.0f));
 		p.setPerspectiveProj(m_persProj);
 		m_pShadowMapEffect->setWVP(p.getWVPTrans());
@@ -181,6 +195,7 @@ public:
 
 		Pipeline p;
 		p.setPerspectiveProj(m_persProj);
+
 		p.scale(10.0f, 10.0f, 10.0f);
 		p.worldPos(0.0f, 0.0f, 1.0f);
 		p.rotate(90.0f, 0.0f, 0.0f);
@@ -189,7 +204,7 @@ public:
 		m_pLightingEffect->SetWorldMatrix(p.getWorldTrans());
 		p.setCamera(m_spotLight.position, m_spotLight.direction, Vector3f(0.0f, 1.0f, 0.0f));
 		m_pLightingEffect->setLightWVP(p.getWVPTrans());
-		m_pGroundTex->bind(GL_TEXTURE1);
+		m_pGroundTex->bind(GL_TEXTURE0);
 		m_pQuad->render();
 
 		p.scale(0.1f, 0.1f, 0.1f);
@@ -216,21 +231,25 @@ public:
 		case OGLDEV_KEY_A:
 		case OGLDEV_KEY_a:
 			m_spotLight.ambientIntensity += 0.05f;
+			//m_dirLight.ambientIntensity += 0.05f;
 			break;
 
 		case OGLDEV_KEY_S:
 		case OGLDEV_KEY_s:
 			m_spotLight.ambientIntensity -= 0.05f;
+			//m_dirLight.ambientIntensity -= 0.05f;
 			break;
 
 		case OGLDEV_KEY_Z:
 		case OGLDEV_KEY_z:
 			m_spotLight.diffuseIntensity += 0.05f;
+			//m_dirLight.diffuseIntensity += 0.05f;
 			break;
 
 		case OGLDEV_KEY_X:
 		case OGLDEV_KEY_x:
 			m_spotLight.diffuseIntensity -= 0.05f;
+			//m_dirLight.diffuseIntensity -= 0.05f;
 			break;
 
 		default:
@@ -249,6 +268,8 @@ private:
 	Camera *m_pGameCamera = NULL;
 	float m_scale;
 	SpotLight m_spotLight;
+	PointLight m_pointLight;
+	DirectionalLight m_dirLight;
 	Mesh *m_pMesh;
 	Mesh *m_pQuad;
 	Texture *m_pGroundTex;

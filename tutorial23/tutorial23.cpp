@@ -48,10 +48,10 @@ public:
 		m_spotLight.color = Vector3f(1.0f, 1.0f, 1.0f);
 		m_spotLight.ambientIntensity = 0.0f;
 		m_spotLight.diffuseIntensity = 0.9f;
-		m_spotLight.attenuation.linear = 0.001f;
+		m_spotLight.attenuation.linear = 0.01f;
 		m_spotLight.position = Vector3f(-20.0, 20.0, 5.0f);
 		m_spotLight.direction = Vector3f(1.0f, -1.0, 0.0);
-		m_spotLight.cutoff = 40.0f;
+		m_spotLight.cutoff = 20.0f;
 
 		m_pointLight.color = Vector3f(0.0f, 1.0f, 1.0f);
 		m_pointLight.ambientIntensity = 0.0f;

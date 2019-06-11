@@ -31,6 +31,16 @@ bool Texture::load()
 		return false;
 	}
 
+	// 2 x 2 Image, 3bytes per pixel(R, G, B) (test)
+	//GLubyte s_pixels[4 * 3] =
+	//{
+	//	255,	0,		0,		//Red
+	//	0,		255,	0,		//Green
+	//	0,		0,		255,	//Blue
+	//	255,	255,	0		//Yellow
+	//};
+
+
 	//生成指定数目的的纹理对象并将其句柄储存在 GLuint 数组指针中（第二个参数就是）
 	glGenTextures(1, &m_textureObj);
 	glBindTexture(m_textureTarget, m_textureObj);
@@ -43,6 +53,7 @@ bool Texture::load()
 	 @param 7,8,9: 纹理数据来源，分别为 格式，类型，内存地址
 	*/
 	glTexImage2D(m_textureTarget, 0, GL_RGBA, m_image.columns(), m_image.rows(), 0, GL_RGBA, GL_UNSIGNED_BYTE, m_blob.data());
+	//glTexImage2D(m_textureTarget, 0, GL_RGBA, 2, 2, 0, GL_RGBA, GL_UNSIGNED_BYTE, s_pixels);
 	glTexParameterf(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameterf(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glBindTexture(m_textureTarget, 0);
